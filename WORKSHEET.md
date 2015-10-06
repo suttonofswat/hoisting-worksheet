@@ -18,18 +18,24 @@ var myvar = 'my value';
 
 > output:
 >-
->-
+>- undefined
 >-
 > why?
 >-
->-
+>- because it moves the local variable to the top of the function, but not the definition. 
 >-
 >-
 >-
 >-
 > rewrite without hoisting
 >-
->-
+>-var myvar = 'my value'; 
+  
+>-(function() { 
+	var myvar;
+	console.log(myvar);
+	myvar = 'local value'; 
+>-})();
 >-
 >-
 >-
@@ -58,18 +64,31 @@ test();
 ```
 
 > output:
->-
+>-'Switch flag from false to true'
 >-
 >-
 > why?
 >-
->-
+>-the flag variable is not locally defined, so it cannot be true so it immediality goes to else. 
 >-
 >-
 >-
 >-
 > rewrite without hoisting
->-
+>-var flag = true; 
+  
+>-function test() {
+	var flag;
+	if(flag) {
+		flag = false;
+		console.log('Switch flag from true to false');
+	}
+	else {
+		flag = true;
+		console.log('Switch flag from false to true');
+	}
+}
+test();
 >-
 >-
 >-
@@ -94,11 +113,11 @@ saySomething();
 ```
 
 > output:
->-
+>-undefined
 >-
 >-
 > why?
->-
+>-becuase it hoists the var message to the top of the saySomething function as blank, then when it console logs, it has nothing in it.
 >-
 >-
 >-
@@ -106,7 +125,14 @@ saySomething();
 >-
 > rewrite without hoisting
 >-
->-
+>-var message = 'Hello world'; 
+  
+function saySomething() {
+	var message;
+	console.log(message);
+	message = 'Foo bar';
+}
+saySomething();
 >-
 >-
 >-
@@ -129,12 +155,12 @@ saySomething();
 ```
 
 > output:
->-
+>-'Hello World'
 >-
 >-
 > why?
 >-
->-
+>-No new variables were declared  in the function.
 >-
 >-
 >-
@@ -157,11 +183,11 @@ test();
 
 > output:
 >-
->-
->-
+>-undefined
+>-2
 > why?
 >-
->-
+>-the function is available to return 2, but only the declartion of 'a' is available.
 >-
 >-
 >-
@@ -169,7 +195,19 @@ test();
 > rewrite without hoisting
 >-
 >-
->-
+>-function test() {
+	var a;
+	
+	function foo() {
+		return 2;
+	}
+
+	console.log(foo());
+	console.log(a);
+
+	a = 1;
+	
+}
 >-
 >-
 >-
@@ -195,19 +233,28 @@ test();
 ```
 
 > output:
->-
->-
+>-undefined
+>-'aloha'
 >-
 > why?
 >-
->-
+>-the function is available to console log 'aloha', but only the declartion of bar is available.
 >-
 >-
 >-
 >-
 > rewrite without hoisting
 >-
->-
+>-(function() {
+	function foo() {
+		console.log('aloha');
+	}
+	var bar;
+	console.log(bar);
+	foo();
+	bar = 1;
+	baz = 2;
+})();
 >-
 >-
 >-
@@ -239,18 +286,32 @@ fancy();
 
 > output:
 >-
->-
+>-'I can Run'
 >-
 > why?
 >-
->-
+>-beucase the function run went to the top of the fancy function as a truthie value. So when the fancy function was run, it ran the if statement.
 >-
 >-
 >-
 >-
 > rewrite without hoisting
->-
->-
+>-var run = false;
+>-function fancy(arg1, arg2) {
+	function run() {
+		console.log('Will I run?');
+	}
+
+	if(run) {
+		console.log('I can run');
+	}
+	else {
+		console.log('I can\'t run');
+	}
+
+	
+}
+fancy();
 >-
 >-
 >-
@@ -281,11 +342,11 @@ fancy();
 ```
 
 > output:
->-
+>-'i can\'t run'
 >-
 >-
 > why?
->-
+>-becuase it moves the variable run (not as a function) to the top as blank, which is a falsey value so it would go right to the else statement.
 >-
 >-
 >-
@@ -293,7 +354,22 @@ fancy();
 >-
 > rewrite without hoisting
 >-
->-
+>-var run = false;
+
+function fancy(arg1, arg2) {
+	var run;
+	if(run) {
+		console.log('I can run');
+	}
+	else {
+		console.log('I can\'t run');
+	}
+
+	run = function() {
+		console.log('Will I run?');
+	}
+}
+fancy();
 >-
 >-
 >-
